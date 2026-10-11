@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zara's 12th Birthday Quest 🎁</title>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF5E7E;
+            --primary-hover: #FF3B62;
+            --secondary: #6C5CE7;
+            --background: #FFF0F5;
+            --card-bg: #FFFFFF;
+            --text-main: #2D3436;
+            --text-muted: #636E72;
+            --border-radius: 24px;
+            --shadow: 0 12px 35px rgba(255, 94, 126, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #FFE4E1;
+        }
+
+        .zara-header {
+            text-align: center;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 2px dashed #FFE0E9;
+        }
+
+        .zara-header h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .progress-header {
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #F0F0F0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #FF758C, #FF7EB3);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .card {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .card.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            align-self: flex-start;
+            background: #FFEAA7;
+            color: #D63031;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        p.description {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #F8F9FA;
+            border: 2px solid #E9ECEF;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-label:has(input:checked) {
+            background: #FFF0F3;
+            border-color: var(--primary);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 14px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(255, 94, 126, 0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #F1F2F6;
+            color: var(--text-main);
+            box-shadow: none;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .error-msg {
+            color: #E17055;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .hint-box {
+            background: #FFF9E6;
+            border-left: 4px solid #F1C40F;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #7F8C8D;
+            display: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 48px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: #2D3436;
+        }
+
+        .modal-location {
+            background: #E8F8F5;
+            color: #1ABC9C;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div class="zara-header">
+            <h1>✨ Zara's 12th Birthday Quest ✨</h1>
+        </div>
+
+        <div class="progress-header" id="progressHeader">
+            <div class="progress-title">
+                <span>ZARA'S QUEST PROGRESS</span>
+                <span id="progressText">0 / 12</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="card active" id="welcomeCard">
+            <div class="badge">🎈 Happy 12th Birthday Zara!</div>
+            <h2>Welcome to Your Personal Birthday Treasure Quest!</h2>
+            <p class="description">12 special birthday surprises are hidden and waiting for you! Solve each question to unlock where your gifts are hidden.</p>
+            <button class="btn" onclick="startQuest()">Start Your Quest, Zara! 🚀</button>
+            <button class="reset-btn" onclick="resetQuest()">🔄 Reset Quest (For Testing)</button>
+        </div>
+
+        <div class="card" id="questionCard">
+            <div class="badge" id="questionBadge">Present #1 for Zara</div>
+            <h2 id="questionText">Question goes here...</h2>
+            
+            <div class="input-group">
+                <div class="checkbox-group" id="checkboxContainer"></div>
+
+                <div id="textInputArea">
+                    <input type="text" id="answerInput" placeholder="Type your answer, Zara..." autocomplete="off">
+                </div>
+
+                <button class="btn" onclick="checkCurrentAnswer()">Submit Answer ✨</button>
+
+                <div class="error-msg" id="errorMsg">Not quite, Zara! Give it another try! 🤔</div>
+                <button class="btn btn-secondary" onclick="toggleHint()">💡 Need a hint, Zara?</button>
+            </div>
+
+            <div class="hint-box" id="hintBox"></div>
+        </div>
+
+        <div class="card" id="completionCard">
+            <div class="badge">🏆 Quest Completed!</div>
+            <h2>Happy 12th Birthday, Zara! 🎉💖</h2>
+            <p class="description">You solved all 12 clues and unlocked all your birthday presents! Have an incredible 12th birthday!</p>
+            <button class="btn" onclick="resetQuest()">Replay Zara's Quest 🔄</button>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="revealModal">
+        <div class="modal-card">
+            <div class="modal-icon">🎁</div>
+            <h3 class="modal-title">Awesome Job, Zara!</h3>
+            <p style="color: var(--text-muted); font-size: 14px;">Here is where your present is waiting:</p>
+            <div class="modal-location" id="modalLocationText">Location instruction...</div>
+            <button class="btn" onclick="nextQuestion()">On to Next Clue! →</button>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            {
+                question: "What is your full name?",
+                acceptedAnswers: ["zara parini miglani", "zara"],
+                hint: "Your first, middle, and last name!",
+                location: "Well done Zara! Go search for Gift #1!"
+            },
+            {
+                question: "What is 99 times 11?",
+                acceptedAnswers: ["1089"],
+                hint: "100 x 11 minus 11!",
+                location: "Awesome math skills Zara! Find Gift #2!"
+            },
+            {
+                question: "Which is the best school in London?",
+                acceptedAnswers: ["clsg", "city of london school for girls"],
+                hint: "It stands for City of London School for Girls!",
+                location: "Spot on Zara! Look for Gift #3!"
+            },
+            {
+                question: "Which sport do you like best to play?",
+                checkboxes: ["(a) Cricket", "(b) Netball", "(c) Badminton", "(d) Other"],
+                acceptAny: true,
+                hint: "Pick your absolute favorite!",
+                location: "Great choice Zara! Find Gift #4!"
+            },
+            {
+                question: "What is your brother's middle name?",
+                acceptedAnswers: ["neel"],
+                hint: "Starts with an N!",
+                location: "You got it Zara! Search for Gift #5!"
+            },
+            {
+                question: "Which country are you from?",
+                checkboxes: ["(a) USA", "(b) India", "(c) UK", "(d) Sri Lanka"],
+                acceptedAnswers: ["(b) india", "india", "(b)"],
+                hint: "The correct choice is (b)!",
+                location: "Correct Zara! Go find Gift #6!"
+            },
+            {
+                question: "If the Metropolitan line wasn't working, which tube would you take as first choice from/near Moorgate?",
+                checkboxes: ["(a) Central", "(b) Bakerloo", "(c) Jubilee", "(d) Elizabeth"],
+                acceptedAnswers: ["(d) elizabeth", "elizabeth", "(d)", "elizabeth line"],
+                hint: "Named after the Queen!",
+                location: "Great navigation Zara! Uncover Gift #7!"
+            },
+            {
+                question: "What is your mother's favourite place at home?",
+                checkboxes: ["(a) on the bed", "(b) watching TV", "(c) cooking tasty food", "(d) teams/zoom calls"],
+                acceptedAnswers: ["(a) on the bed", "on the bed", "(a)", "(d) teams/zoom calls", "teams/zoom calls", "(d)"],
+                hint: "Either (a) or (d) is correct!",
+                location: "Love it Zara! Search for Gift #8!"
+            },
+            {
+                question: "Which is the best tube station to disembark at, for morning club?",
+                checkboxes: ["(a) Barbican", "(b) Northwood", "(c) Moorgate", "(d) Moor Park"],
+                acceptedAnswers: ["(c) moorgate", "moorgate", "(c)"],
+                hint: "It starts with an M!",
+                location: "Perfect Zara! Go find Gift #9!"
+            },
+            {
+                question: "Which day should you start your 'favourite' TV show?",
+                checkboxes: ["Sunday", "Friday", "Saturday", "Wednesday"],
+                acceptedAnswers: ["wednesday"],
+                hint: "Think mid-week!",
+                location: "Mid-week magic! Locate Gift #10, Zara!"
+            },
+            {
+                question: "Who is your best NEW friend in CLSG?",
+                acceptAny: true,
+                hint: "Any answer you type will work!",
+                location: "How wonderful Zara! Find Gift #11!"
+            },
+            {
+                question: "What is your father's favourite dish to eat?",
+                checkboxes: ["(a) Butter Chicken", "(b) Chhole Bhature", "(c) Alu Poori", "(d) Pesto Pasta"],
+                acceptedAnswers: ["(a) butter chicken", "butter chicken", "(a)", "(b) chhole bhature", "chhole bhature", "(b)"],
+                hint: "Either (a) or (b) is correct!",
+                location: "Yum! Time to claim your final Birthday Gift #12, Zara! 🎉"
+            }
+        ];
+
+        let currentStageIndex = 0;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedStage = localStorage.getItem('birthday_quest_stage');
+            if (savedStage !== null) {
+                currentStageIndex = parseInt(savedStage, 10);
+            }
+            updateProgress();
+            
+            document.getElementById('answerInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkCurrentAnswer();
+                }
+            });
+        });
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const percent = Math.round((currentStageIndex / stages.length) * 100);
+            progressBar.style.width = percent + '%';
+            progressText.innerText = `${currentStageIndex} / ${stages.length}`;
+        }
+
+        function startQuest() {
+            if (currentStageIndex >= stages.length) {
+                showCard('completionCard');
+            } else {
+                loadStage(currentStageIndex);
+                showCard('questionCard');
+            }
+        }
+
+        function loadStage(index) {
+            const stage = stages[index];
+            document.getElementById('questionBadge').innerText = `Present #${index + 1} for Zara`;
+            document.getElementById('questionText').innerText = stage.question;
+            document.getElementById('hintBox').innerText = stage.hint;
+            document.getElementById('hintBox').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+
+            const checkboxContainer = document.getElementById('checkboxContainer');
+            const textInputArea = document.getElementById('textInputArea');
+
+            if (stage.checkboxes && stage.checkboxes.length > 0) {
+                textInputArea.style.display = 'none';
+                checkboxContainer.style.display = 'flex';
+                checkboxContainer.innerHTML = '';
+
+                stage.checkboxes.forEach((itemText) => {
+                    const label = document.createElement('label');
+                    label.className = 'checkbox-label';
+                    label.innerHTML = `
+                        <input type="checkbox" name="questOption" value="${itemText}" onchange="handleSingleSelect(this)">
+                        <span>${itemText}</span>
+                    `;
+                    checkboxContainer.appendChild(label);
+                });
+            } else {
+                checkboxContainer.style.display = 'none';
+                textInputArea.style.display = 'block';
+                document.getElementById('answerInput').value = '';
+            }
+        }
+
+        function handleSingleSelect(selectedCheckbox) {
+            if (selectedCheckbox.checked) {
+                const checkboxes = document.querySelectorAll('input[name="questOption"]');
+                checkboxes.forEach(cb => {
+                    if (cb !== selectedCheckbox) {
+                        cb.checked = false;
+                    }
+                });
+            }
+        }
+
+        function checkCurrentAnswer() {
+            const currentStage = stages[currentStageIndex];
+            let userAnswers = [];
+
+            if (currentStage.checkboxes && currentStage.checkboxes.length > 0) {
+                const checkedInputs = document.querySelectorAll('#checkboxContainer input[type="checkbox"]:checked');
+                checkedInputs.forEach(cb => userAnswers.push(cb.value.trim().toLowerCase()));
+            } else {
+                const val = document.getElementById('answerInput').value.trim().toLowerCase();
+                if (val) userAnswers.push(val);
+            }
+
+            if (userAnswers.length === 0) return;
+
+            let isCorrect = false;
+            if (currentStage.acceptAny) {
+                isCorrect = true;
+            } else if (currentStage.acceptedAnswers) {
+                isCorrect = userAnswers.some(userAns => 
+                    currentStage.acceptedAnswers.some(ans => 
+                        userAns.includes(ans.toLowerCase()) || ans.toLowerCase().includes(userAns)
+                    )
+                );
+            }
+
+            if (isCorrect) {
+                if (typeof confetti === 'function') {
+                    try { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); } catch(e){}
+                }
+                document.getElementById('modalLocationText').innerText = currentStage.location;
+                document.getElementById('revealModal').style.display = 'flex';
+            } else {
+                const card = document.getElementById('questionCard');
+                card.classList.add('shake');
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => { card.classList.remove('shake'); }, 400);
+            }
+        }
+
+        function toggleHint() {
+            const hintBox = document.getElementById('hintBox');
+            if (hintBox.style.display === 'none' || hintBox.style.display === '') {
+                hintBox.style.display = 'block';
+            } else {
+                hintBox.style.display = 'none';
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('revealModal').style.display = 'none';
+            currentStageIndex++;
+            localStorage.setItem('birthday_quest_stage', currentStageIndex);
+            updateProgress();
+
+            if (currentStageIndex < stages.length) {
+                loadStage(currentStageIndex);
+            } else {
+                showCard('completionCard');
+            }
+        }
+
+        function showCard(cardId) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById(cardId).classList.add('active');
+        }
+
+        function resetQuest() {
+            localStorage.removeItem('birthday_quest_stage');
+            currentStageIndex = 0;
+            updateProgress();
+            showCard('welcomeCard');
+        }
+    </script>
+</body>
+</html>
